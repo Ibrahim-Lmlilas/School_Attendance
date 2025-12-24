@@ -1,0 +1,13 @@
+{
+  "name": "school-attendance",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "npm run -w frontend dev",
+    "start": "npm run -w frontend dev",
+    "build": "npm run -w frontend build"
+  }
+}
