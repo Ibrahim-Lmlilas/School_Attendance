@@ -1,14 +1,23 @@
 {
-  
   "name": "school-attendance",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "dev": "npm run -w frontend dev",
-    "start": "npm run -w frontend dev",
-    "build": "npm run -w frontend build"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ikrambenallali/School-Attendance.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ikrambenallali/School-Attendance/issues"
+  },
+  "homepage": "https://github.com/ikrambenallali/School-Attendance#readme",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
   }
 }
