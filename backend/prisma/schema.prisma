@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider =  "postgresql"
+  url      =  env("DATABASE_URL")
+}
+
+// User model -
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String   // hashed password
+  firstName String
+  lastName  String
+  role      UserRole @default(TEACHER)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  sessions  Session[]  
+  
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+enum UserRole {
+  TEACHER
+  ADMIN
+}
+
+// Student model - 
+model Student {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String?  @unique
+  
+  // Relations
+  classId   String
+  class     Class    @relation(fields: [classId], references: [id])
+  attendances Attendance[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@index([classId])
+  @@map("students")
+}
+
+// Class
+model Class {
+  id        String   @id @default(uuid())
+  name      String   
+  
+  students  Student[]
+  sessions  Session[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("classes")
+}
+
+// Subject
+model Subject {
+  id        String   @id @default(uuid())
+  name      String   
+  
+  sessions  Session[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@map("subjects")
+}
+
+// Session model
+model Session {
+  id          String   @id @default(uuid())
+  date        DateTime // Date and time of the session
+  
+  // Relations
+  teacherId   String
+  teacher     User     @relation(fields: [teacherId], references: [id])
+  
+  classId     String
+  class       Class    @relation(fields: [classId], references: [id])
+  
+  subjectId   String
+  subject     Subject  @relation(fields: [subjectId], references: [id])
+  
+  attendances Attendance[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([teacherId])
+  @@index([classId])
+  @@index([subjectId])
+  @@index([date])
+  @@map("sessions")
+}
+
+// Attendance model 
+model Attendance {
+  id        String           @id @default(uuid())
+  status    AttendanceStatus @default(PRESENT)
+  comment   String?          // Optional comment/note
+  
+  // Relations
+  studentId String
+  student   Student          @relation(fields: [studentId], references: [id])
+  
+  sessionId String
+  session   Session          @relation(fields: [sessionId], references: [id])
+  
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  
+  @@unique([studentId, sessionId])
+  @@index([studentId])
+  @@index([sessionId])
+  @@index([status])
+  @@map("attendances")
+}
+
+enum AttendanceStatus {
+  PRESENT   
+  ABSENT    
+  LATE      
+  EXCUSED   
+}
